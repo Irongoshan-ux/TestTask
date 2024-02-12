@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/getHouseByNumber", async ([AsParameters] HouseRequest request, IHttpClientFactory clientFactory,
+app.MapGet("/getHouseByNumber", async (HouseRequest request, int elementsCount, IHttpClientFactory clientFactory,
                                         IConfiguration config, [FromServices] ILogger<HouseRequest> logger,
                                         CancellationToken cancellationToken) =>
 {
@@ -37,7 +37,7 @@ app.MapGet("/getHouseByNumber", async ([AsParameters] HouseRequest request, IHtt
     var url = config["GosUslugi:SearchByCadastreNumberUrl"];
 
     var httpResponse = await httpClient
-        .PostAsync($"{url}?pageIndex=1&elementsPerPage={request.ElementsCount}", JsonContent.Create(request), cancellationToken);
+        .PostAsync($"{url}?pageIndex=1&elementsPerPage={elementsCount}", JsonContent.Create(request), cancellationToken);
 
     dynamic? parsedResult;
     try
@@ -57,4 +57,4 @@ app.MapGet("/getHouseByNumber", async ([AsParameters] HouseRequest request, IHtt
 
 app.Run();
 
-internal record HouseRequest(string? CadastreNumber, int ElementsCount = 100);
+internal record HouseRequest(string CadastreNumber);
